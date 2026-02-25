@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -13,19 +13,19 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+        name = "UUID",
+        strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "id", updatable = false, nullable = false, columnDefinition = "uuid")
-    @Type(type="org.hibernate.type.PostgresUUIDType")
+    @Column(updatable = false, nullable = false)
     private UUID id;
 
     @Column(nullable = false, unique = true)
@@ -33,9 +33,6 @@ public class User {
 
     @Column(nullable = false)
     private String passwordHash;
-
-    @Column(nullable = false)
-    private String name;
 
     @Column(nullable = false)
     private Boolean active = true;

@@ -73,4 +73,55 @@ public class ObjectiveServiceImpl implements IObjectiveService {
         return objectiveRepository.findAll(pageable)
                 .map(okrMapper::toObjectiveDto);
     }
+
+    @Override
+    @Transactional
+    public ObjectiveDto updateObjective(Long id, ObjectiveDto objectiveDto) {
+        log.info("Updating Objective with id: {}", id);
+
+        Objective objective = objectiveRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Objective not found with id: " + id));
+
+        if (objectiveDto.getDescription() != null && !objective.getDescription().equals(objectiveDto.getDescription())) {
+            if (objectiveRepository.existsByDescription(objectiveDto.getDescription())) {
+                throw new ResourceAlreadyExistsException("Objective with description '" + objectiveDto.getDescription() + "' already exists.");
+            }
+            objective.setDescription(objectiveDto.getDescription());
+        }
+
+        if (objectiveDto.getPeriodId() != null) {
+            Period period = periodRepository.findById(objectiveDto.getPeriodId())
+                    .orElseThrow(() -> new EntityNotFoundException("Period not found with id: " + objectiveDto.getPeriodId()));
+            objective.setPeriod(period);
+        }
+
+        if (objectiveDto.getPilarId() != null) {
+            Pilar pilar = pilarRepository.findById(objectiveDto.getPilarId())
+                    .orElseThrow(() -> new EntityNotFoundException("Pilar not found with id: " + objectiveDto.getPilarId()));
+            objective.setPilar(pilar);
+        }
+
+        if (objectiveDto.getIniciativaId() != null) {
+            Iniciativa iniciativa = iniciativaRepository.findById(objectiveDto.getIniciativaId())
+                    .orElseThrow(() -> new EntityNotFoundException("Iniciativa not found with id: " + objectiveDto.getIniciativaId()));
+            objective.setIniciativa(iniciativa);
+        }
+
+        Objective updatedObjective = objectiveRepository.save(objective);
+        log.info("Updated objective with id: {}", updatedObjective.getId());
+
+        return okrMapper.toObjectiveDto(updatedObjective);
+    }
+
+    @Override
+    @Transactional
+    public void deleteObjective(Long id) {
+        log.info("Soft deleting Objective with id: {}", id);
+        Objective objective = objectiveRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Objective not found with id: " + id));
+        
+        objective.setActive(false);
+        objectiveRepository.save(objective);
+        log.info("Objective with id: {} soft deleted", id);
+    }
 }

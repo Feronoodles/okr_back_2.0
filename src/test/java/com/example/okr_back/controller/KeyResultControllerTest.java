@@ -62,7 +62,7 @@ class KeyResultControllerTest {
 
     @Test
     void createKeyResult_ReturnsCreated() throws Exception {
-        when(keyResultService.createKeyResult(any(KeyResultDto.class), eq(1L))).thenReturn(keyResultDto);
+        when(keyResultService.createKeyResult(any(KeyResultDto.class))).thenReturn(keyResultDto);
 
         mockMvc.perform(post("/keyresults/1")
                         .contentType(MediaType.APPLICATION_JSON)

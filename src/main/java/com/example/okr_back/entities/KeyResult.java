@@ -4,18 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "key_results")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KeyResult {
+public class KeyResult extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +25,7 @@ public class KeyResult {
 
     @ManyToOne
     @JoinColumn(name = "objective_id", nullable = false)
+    @ToString.Exclude
     private Objective objective;
 
     @ManyToOne
@@ -51,8 +54,6 @@ public class KeyResult {
 
     @Enumerated(EnumType.STRING)
     private Status status;
-
-    private LocalDate lastUpdated;
 
     @Column(columnDefinition = "TEXT")
     private String notesBlockers;

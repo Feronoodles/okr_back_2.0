@@ -17,6 +17,9 @@ import java.util.function.Function;
 @Slf4j
 public class JwtTokenProvider {
 
+    @Value("${app.jwt-secret}")
+    private String jwtSecret;
+
     @Value("${app.jwt-expiration-milliseconds}")
     private long jwtExpirationInMs;
 
@@ -27,8 +30,12 @@ public class JwtTokenProvider {
 
     @javax.annotation.PostConstruct
     public void init() {
-        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-        log.info("Generated a new secure key for HS512");
+        if (jwtSecret == null || jwtSecret.length() < 32) {
+             this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+             log.warn("JWT Secret is not set or too short. Generated a random secure key for HS512. Tokens will be invalidated on restart.");
+        } else {
+             this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        }
     }
 
     public String generateToken(UserDetails userDetails) {

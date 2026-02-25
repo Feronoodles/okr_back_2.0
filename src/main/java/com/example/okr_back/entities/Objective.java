@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "objectives")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +21,7 @@ import java.util.List;
         name = "Objective.withKeyResults",
         attributeNodes = @NamedAttributeNode("keyResults")
 )
-public class Objective {
+public class Objective extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,5 +46,6 @@ public class Objective {
     private Boolean active = true;
 
     @OneToMany(mappedBy = "objective", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
     private List<KeyResult> keyResults;
 }

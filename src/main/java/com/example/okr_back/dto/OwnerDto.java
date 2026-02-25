@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 public class OwnerDto {
     private Long id;
     @NotBlank
-    private String fullName;
+    private String name;
     private String email;
-    private Long areaId;
+
 }

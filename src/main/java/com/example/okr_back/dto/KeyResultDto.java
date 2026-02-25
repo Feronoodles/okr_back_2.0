@@ -15,6 +15,11 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class KeyResultDto {
 
+    private Long id;
+
+    @NotNull
+    private Long objectiveId;
+
     @NotNull
     private Long areaId;
 

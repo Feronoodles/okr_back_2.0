@@ -81,7 +81,7 @@ class KeyResultServiceImplTest {
         when(keyResultRepository.save(any(KeyResult.class))).thenReturn(keyResult);
         when(okrMapper.toKeyResultDto(any(KeyResult.class))).thenReturn(keyResultDto);
 
-        KeyResultDto result = keyResultService.createKeyResult(keyResultDto, 1L);
+        KeyResultDto result = keyResultService.createKeyResult(keyResultDto);
 
         assertNotNull(result);
         assertEquals("KR1", result.getCode());
@@ -92,7 +92,7 @@ class KeyResultServiceImplTest {
     void createKeyResult_ObjectiveNotFound_ThrowsException() {
         when(objectiveRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> keyResultService.createKeyResult(keyResultDto, 1L));
+        assertThrows(EntityNotFoundException.class, () -> keyResultService.createKeyResult(keyResultDto));
         verify(keyResultRepository, never()).save(any(KeyResult.class));
     }
 }

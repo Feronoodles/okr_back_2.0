@@ -26,10 +26,8 @@ public class DataInitializer implements CommandLineRunner {
         String adminEmail = "admin@example.com";
         if (userRepository.findByEmail(adminEmail).isEmpty()) {
             User adminUser = User.builder()
-                    .id(UUID.randomUUID())
                     .email(adminEmail)
                     .passwordHash(passwordEncoder.encode("admin123"))
-                    .name("Admin User")
                     .active(true)
                     .build();
             userRepository.save(adminUser);

@@ -28,6 +28,8 @@ public class OkrMapper {
 
     public KeyResultDto toKeyResultDto(KeyResult keyResult) {
         KeyResultDto dto = new KeyResultDto();
+        dto.setId(keyResult.getId());
+        dto.setObjectiveId(keyResult.getObjective().getId());
         dto.setAreaId(keyResult.getArea().getId());
         dto.setOwnerId(keyResult.getOwner().getId());
         dto.setCode(keyResult.getCode());

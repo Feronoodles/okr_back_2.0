@@ -46,4 +46,33 @@ public class ObjectiveController {
     public ResponseEntity<Page<ObjectiveDto>> getAllObjectives(Pageable pageable) {
         return ResponseEntity.ok(objectiveService.getAllObjectives(pageable));
     }
+
+    @Operation(summary = "Update an existing Objective")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Objective updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "Objective not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @PutMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<ObjectiveDto> updateObjective(@PathVariable Long id, @Valid @RequestBody ObjectiveDto objectiveDto) {
+        ObjectiveDto updatedObjective = objectiveService.updateObjective(id, objectiveDto);
+        return ResponseEntity.ok(updatedObjective);
+    }
+
+    @Operation(summary = "Soft delete an Objective")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Objective deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Objective not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<Void> deleteObjective(@PathVariable Long id) {
+        objectiveService.deleteObjective(id);
+        return ResponseEntity.noContent().build();
+    }
 }

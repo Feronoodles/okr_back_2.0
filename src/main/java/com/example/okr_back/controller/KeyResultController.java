@@ -23,7 +23,7 @@ public class KeyResultController {
         this.keyResultService = keyResultService;
     }
 
-    @Operation(summary = "Create a new Key Result for an Objective")
+    @Operation(summary = "Create a new Key Result")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Key Result created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
@@ -31,9 +31,36 @@ public class KeyResultController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Objective not found")
     })
-    @PostMapping("/{objectiveId}")
-    public ResponseEntity<KeyResultDto> createKeyResult(@PathVariable Long objectiveId, @Valid @RequestBody KeyResultDto keyResultDto) {
-        KeyResultDto createdKeyResult = keyResultService.createKeyResult(keyResultDto, objectiveId);
+    @PostMapping
+    public ResponseEntity<KeyResultDto> createKeyResult(@Valid @RequestBody KeyResultDto keyResultDto) {
+        KeyResultDto createdKeyResult = keyResultService.createKeyResult(keyResultDto);
         return new ResponseEntity<>(createdKeyResult, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Update an existing Key Result")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Key Result updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "Key Result not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<KeyResultDto> updateKeyResult(@PathVariable Long id, @Valid @RequestBody KeyResultDto keyResultDto) {
+        KeyResultDto updatedKeyResult = keyResultService.updateKeyResult(id, keyResultDto);
+        return ResponseEntity.ok(updatedKeyResult);
+    }
+
+    @Operation(summary = "Soft delete a Key Result")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Key Result deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Key Result not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteKeyResult(@PathVariable Long id) {
+        keyResultService.deleteKeyResult(id);
+        return ResponseEntity.noContent().build();
     }
 }

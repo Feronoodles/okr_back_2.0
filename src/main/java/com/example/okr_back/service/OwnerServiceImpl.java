@@ -27,21 +27,16 @@ public class OwnerServiceImpl implements IOwnerService {
 
     @Override
     public OwnerDto createOwner(OwnerDto ownerDto) {
-        log.info("Creating new owner with name: {}", ownerDto.getFullName());
-        if (ownerRepository.existsByFullName(ownerDto.getFullName())) {
-            throw new ResourceAlreadyExistsException("Owner with name '" + ownerDto.getFullName() + "' already exists.");
+        log.info("Creating new owner with name: {}", ownerDto.getName());
+        if (ownerRepository.existsByName(ownerDto.getName())) {
+            throw new ResourceAlreadyExistsException("Owner with name '" + ownerDto.getName() + "' already exists.");
         }
 
         Owner owner = new Owner();
-        owner.setFullName(ownerDto.getFullName());
+        owner.setName(ownerDto.getName());
         owner.setEmail(ownerDto.getEmail());
         owner.setActive(true);
 
-        if (ownerDto.getAreaId() != null) {
-            Area area = areaRepository.findById(ownerDto.getAreaId())
-                    .orElseThrow(() -> new EntityNotFoundException("Area not found with id: " + ownerDto.getAreaId()));
-            owner.setArea(area);
-        }
 
         Owner savedOwner = ownerRepository.save(owner);
         log.info("Saved new owner with id: {}", savedOwner.getId());
@@ -55,9 +50,8 @@ public class OwnerServiceImpl implements IOwnerService {
         return ownerRepository.findAll().stream()
                 .map(owner -> new OwnerDto(
                         owner.getId(),
-                        owner.getFullName(),
-                        owner.getEmail(),
-                        owner.getArea() != null ? owner.getArea().getId() : null
+                        owner.getName(),
+                        owner.getEmail()
                 ))
                 .collect(Collectors.toList());
     }

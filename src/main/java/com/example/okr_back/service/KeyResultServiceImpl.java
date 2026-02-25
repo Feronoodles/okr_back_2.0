@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -37,11 +37,11 @@ public class KeyResultServiceImpl implements IKeyResultService {
 
     @Override
     @Transactional
-    public KeyResultDto createKeyResult(KeyResultDto keyResultDto, Long objectiveId) {
-        log.info("Creating new Key Result for objective id: {}", objectiveId);
+    public KeyResultDto createKeyResult(KeyResultDto keyResultDto) {
+        log.info("Creating new Key Result for objective id: {}", keyResultDto.getObjectiveId());
 
-        Objective objective = objectiveRepository.findById(objectiveId)
-                .orElseThrow(() -> new EntityNotFoundException("Objective not found with id: " + objectiveId));
+        Objective objective = objectiveRepository.findById(keyResultDto.getObjectiveId())
+                .orElseThrow(() -> new EntityNotFoundException("Objective not found with id: " + keyResultDto.getObjectiveId()));
         Area area = areaRepository.findById(keyResultDto.getAreaId())
                 .orElseThrow(() -> new EntityNotFoundException("Area not found with id: " + keyResultDto.getAreaId()));
         Owner owner = ownerRepository.findById(keyResultDto.getOwnerId())
@@ -59,7 +59,6 @@ public class KeyResultServiceImpl implements IKeyResultService {
         keyResult.setTargetValue(keyResultDto.getTargetValue());
         keyResult.setCurrentValue(keyResultDto.getCurrentValue());
         keyResult.setStatus(keyResultDto.getStatus());
-        keyResult.setLastUpdated(LocalDate.now());
         keyResult.setNotesBlockers(keyResultDto.getNotesBlockers());
         keyResult.setActive(true);
 
@@ -67,5 +66,77 @@ public class KeyResultServiceImpl implements IKeyResultService {
         log.info("Saved new key result with code: {}", savedKeyResult.getCode());
 
         return okrMapper.toKeyResultDto(savedKeyResult);
+    }
+
+    @Override
+    @Transactional
+    public KeyResultDto updateKeyResult(Long id, KeyResultDto keyResultDto) {
+        log.info("Updating Key Result with id: {}", id);
+
+        KeyResult keyResult = keyResultRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Key Result not found with id: " + id));
+
+        if (keyResultDto.getObjectiveId() != null) {
+            Objective objective = objectiveRepository.findById(keyResultDto.getObjectiveId())
+                    .orElseThrow(() -> new EntityNotFoundException("Objective not found with id: " + keyResultDto.getObjectiveId()));
+            keyResult.setObjective(objective);
+        }
+
+        if (keyResultDto.getAreaId() != null) {
+            Area area = areaRepository.findById(keyResultDto.getAreaId())
+                    .orElseThrow(() -> new EntityNotFoundException("Area not found with id: " + keyResultDto.getAreaId()));
+            keyResult.setArea(area);
+        }
+
+        if (keyResultDto.getOwnerId() != null) {
+            Owner owner = ownerRepository.findById(keyResultDto.getOwnerId())
+                    .orElseThrow(() -> new EntityNotFoundException("Owner not found with id: " + keyResultDto.getOwnerId()));
+            keyResult.setOwner(owner);
+        }
+
+        if (keyResultDto.getCode() != null) {
+            keyResult.setCode(keyResultDto.getCode());
+        }
+        if (keyResultDto.getDescription() != null) {
+            keyResult.setDescription(keyResultDto.getDescription());
+        }
+        if (keyResultDto.getMetricName() != null) {
+            keyResult.setMetricName(keyResultDto.getMetricName());
+        }
+        if (keyResultDto.getDataType() != null) {
+            keyResult.setDataType(keyResultDto.getDataType());
+        }
+        if (keyResultDto.getBaselineValue() != null) {
+            keyResult.setBaselineValue(keyResultDto.getBaselineValue());
+        }
+        if (keyResultDto.getTargetValue() != null) {
+            keyResult.setTargetValue(keyResultDto.getTargetValue());
+        }
+        if (keyResultDto.getCurrentValue() != null) {
+            keyResult.setCurrentValue(keyResultDto.getCurrentValue());
+        }
+        if (keyResultDto.getStatus() != null) {
+            keyResult.setStatus(keyResultDto.getStatus());
+        }
+        if (keyResultDto.getNotesBlockers() != null) {
+            keyResult.setNotesBlockers(keyResultDto.getNotesBlockers());
+        }
+
+        KeyResult updatedKeyResult = keyResultRepository.save(keyResult);
+        log.info("Updated key result with id: {}", updatedKeyResult.getId());
+
+        return okrMapper.toKeyResultDto(updatedKeyResult);
+    }
+
+    @Override
+    @Transactional
+    public void deleteKeyResult(Long id) {
+        log.info("Soft deleting Key Result with id: {}", id);
+        KeyResult keyResult = keyResultRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Key Result not found with id: " + id));
+        
+        keyResult.setActive(false);
+        keyResultRepository.save(keyResult);
+        log.info("Key Result with id: {} soft deleted", id);
     }
 }
