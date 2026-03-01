@@ -42,7 +42,7 @@ public class ObjectiveServiceImpl implements IObjectiveService {
     public ObjectiveDto createObjective(ObjectiveDto objectiveDto) {
         log.info("Creating new Objective");
 
-        if (objectiveRepository.existsByDescription(objectiveDto.getDescription())) {
+        if (objectiveRepository.existsByDescriptionAndActiveTrue(objectiveDto.getDescription())) {
             throw new ResourceAlreadyExistsException("Objective with description '" + objectiveDto.getDescription() + "' already exists.");
         }
 
@@ -69,9 +69,18 @@ public class ObjectiveServiceImpl implements IObjectiveService {
     @Override
     @Transactional(readOnly = true)
     public Page<ObjectiveDto> getAllObjectives(Pageable pageable) {
-        log.info("Fetching all Objectives with pagination");
-        return objectiveRepository.findAll(pageable)
+        log.info("Fetching all active Objectives with pagination");
+        return objectiveRepository.findByActiveTrue(pageable)
                 .map(okrMapper::toObjectiveDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ObjectiveDto getObjectiveById(Long id) {
+        log.info("Fetching active Objective with id: {}", id);
+        Objective objective = objectiveRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(() -> new EntityNotFoundException("Objective not found or inactive with id: " + id));
+        return okrMapper.toObjectiveDto(objective);
     }
 
     @Override
@@ -83,7 +92,7 @@ public class ObjectiveServiceImpl implements IObjectiveService {
                 .orElseThrow(() -> new EntityNotFoundException("Objective not found with id: " + id));
 
         if (objectiveDto.getDescription() != null && !objective.getDescription().equals(objectiveDto.getDescription())) {
-            if (objectiveRepository.existsByDescription(objectiveDto.getDescription())) {
+            if (objectiveRepository.existsByDescriptionAndActiveTrue(objectiveDto.getDescription())) {
                 throw new ResourceAlreadyExistsException("Objective with description '" + objectiveDto.getDescription() + "' already exists.");
             }
             objective.setDescription(objectiveDto.getDescription());
@@ -121,7 +130,12 @@ public class ObjectiveServiceImpl implements IObjectiveService {
                 .orElseThrow(() -> new EntityNotFoundException("Objective not found with id: " + id));
         
         objective.setActive(false);
+        
+        if (objective.getKeyResults() != null) {
+            objective.getKeyResults().forEach(kr -> kr.setActive(false));
+        }
+        
         objectiveRepository.save(objective);
-        log.info("Objective with id: {} soft deleted", id);
+        log.info("Objective with id: {} and its Key Results soft deleted", id);
     }
 }

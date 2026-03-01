@@ -4,6 +4,7 @@ import com.example.okr_back.dto.KeyResultDto;
 
 public interface IKeyResultService {
     KeyResultDto createKeyResult(KeyResultDto keyResultDto);
+    KeyResultDto getKeyResultById(Long id);
     KeyResultDto updateKeyResult(Long id, KeyResultDto keyResultDto);
     void deleteKeyResult(Long id);
 }

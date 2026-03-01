@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 public interface IObjectiveService {
     ObjectiveDto createObjective(ObjectiveDto objectiveDto);
     Page<ObjectiveDto> getAllObjectives(Pageable pageable);
+    ObjectiveDto getObjectiveById(Long id);
     ObjectiveDto updateObjective(Long id, ObjectiveDto objectiveDto);
     void deleteObjective(Long id);
 }

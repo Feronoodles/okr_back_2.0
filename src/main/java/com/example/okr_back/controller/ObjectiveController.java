@@ -47,6 +47,19 @@ public class ObjectiveController {
         return ResponseEntity.ok(objectiveService.getAllObjectives(pageable));
     }
 
+    @Operation(summary = "Get an Objective by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Objective retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Objective not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @GetMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<ObjectiveDto> getObjectiveById(@PathVariable Long id) {
+        return ResponseEntity.ok(objectiveService.getObjectiveById(id));
+    }
+
     @Operation(summary = "Update an existing Objective")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Objective updated successfully"),

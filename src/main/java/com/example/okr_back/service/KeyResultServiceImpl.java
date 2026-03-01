@@ -69,6 +69,15 @@ public class KeyResultServiceImpl implements IKeyResultService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public KeyResultDto getKeyResultById(Long id) {
+        log.info("Fetching active Key Result with id: {}", id);
+        KeyResult keyResult = keyResultRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(() -> new EntityNotFoundException("Key Result not found or inactive with id: " + id));
+        return okrMapper.toKeyResultDto(keyResult);
+    }
+
+    @Override
     @Transactional
     public KeyResultDto updateKeyResult(Long id, KeyResultDto keyResultDto) {
         log.info("Updating Key Result with id: {}", id);

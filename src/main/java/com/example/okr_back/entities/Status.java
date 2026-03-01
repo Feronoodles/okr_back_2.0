@@ -3,6 +3,5 @@ package com.example.okr_back.entities;
 public enum Status {
     COMPLETE,
     ON_TRACK,
-    AT_RISK,
-    OFF_TRACK
+    NO_INITIATED
 }

@@ -37,6 +37,18 @@ public class KeyResultController {
         return new ResponseEntity<>(createdKeyResult, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Get a Key Result by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Key Result retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Key Result not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<KeyResultDto> getKeyResultById(@PathVariable Long id) {
+        return ResponseEntity.ok(keyResultService.getKeyResultById(id));
+    }
+
     @Operation(summary = "Update an existing Key Result")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Key Result updated successfully"),
