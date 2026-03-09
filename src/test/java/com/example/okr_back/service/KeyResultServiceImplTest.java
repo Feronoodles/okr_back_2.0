@@ -51,6 +51,7 @@ class KeyResultServiceImplTest {
     @BeforeEach
     void setUp() {
         keyResultDto = new KeyResultDto();
+        keyResultDto.setObjectiveId(1L);
         keyResultDto.setAreaId(1L);
         keyResultDto.setOwnerId(1L);
         keyResultDto.setCode("KR1");

@@ -78,7 +78,7 @@ class ObjectiveServiceImplTest {
 
     @Test
     void createObjective_Success() {
-        when(objectiveRepository.existsByDescription(anyString())).thenReturn(false);
+        when(objectiveRepository.existsByDescriptionAndActiveTrue(anyString())).thenReturn(false);
         when(periodRepository.findById(1L)).thenReturn(Optional.of(period));
         when(pilarRepository.findById(1L)).thenReturn(Optional.of(pilar));
         when(iniciativaRepository.findById(1L)).thenReturn(Optional.of(iniciativa));
@@ -94,7 +94,7 @@ class ObjectiveServiceImplTest {
 
     @Test
     void createObjective_DescriptionExists_ThrowsException() {
-        when(objectiveRepository.existsByDescription(anyString())).thenReturn(true);
+        when(objectiveRepository.existsByDescriptionAndActiveTrue(anyString())).thenReturn(true);
 
         assertThrows(ResourceAlreadyExistsException.class, () -> objectiveService.createObjective(objectiveDto));
         verify(objectiveRepository, never()).save(any(Objective.class));
@@ -102,7 +102,7 @@ class ObjectiveServiceImplTest {
 
     @Test
     void createObjective_PeriodNotFound_ThrowsException() {
-        when(objectiveRepository.existsByDescription(anyString())).thenReturn(false);
+        when(objectiveRepository.existsByDescriptionAndActiveTrue(anyString())).thenReturn(false);
         when(periodRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> objectiveService.createObjective(objectiveDto));

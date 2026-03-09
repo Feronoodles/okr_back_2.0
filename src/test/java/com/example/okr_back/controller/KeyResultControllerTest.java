@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -48,6 +47,7 @@ class KeyResultControllerTest {
     @BeforeEach
     void setUp() {
         keyResultDto = new KeyResultDto();
+        keyResultDto.setObjectiveId(1L);
         keyResultDto.setAreaId(1L);
         keyResultDto.setOwnerId(1L);
         keyResultDto.setCode("KR1");
@@ -64,7 +64,7 @@ class KeyResultControllerTest {
     void createKeyResult_ReturnsCreated() throws Exception {
         when(keyResultService.createKeyResult(any(KeyResultDto.class))).thenReturn(keyResultDto);
 
-        mockMvc.perform(post("/keyresults/1")
+        mockMvc.perform(post("/keyresults")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(keyResultDto)))
                 .andExpect(status().isCreated())
