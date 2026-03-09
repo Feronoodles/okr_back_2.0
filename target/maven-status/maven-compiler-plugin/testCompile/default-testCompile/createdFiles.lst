@@ -1,0 +1,5 @@
+com\example\okr_back\service\KeyResultServiceImplTest.class
+com\example\okr_back\OkrBackApplicationTests.class
+com\example\okr_back\service\ObjectiveServiceImplTest.class
+com\example\okr_back\controller\KeyResultControllerTest.class
+com\example\okr_back\controller\ObjectiveControllerTest.class
