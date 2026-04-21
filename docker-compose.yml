@@ -41,7 +41,7 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@okr.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     networks:
       - okr_network
     depends_on:
